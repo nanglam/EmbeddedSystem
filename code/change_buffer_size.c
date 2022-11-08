@@ -14,7 +14,7 @@
 int main(int argc, char **argv) {
     int device;
     if(argc != 3) {
-        printf("Usage : ./change_buffer_size [WriteBuffer] [ReadBuffer]")
+        printf("Usage : ./change_buffer_size [N] [M]")
     }
 
     char wbuf[128] = "Write buffer data";

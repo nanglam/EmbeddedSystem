@@ -1,4 +1,4 @@
-obj-m := chardev.o
+obj-m := virtual_disk_dd.o
 KDIR := /lib/modules/$(shell uname -r)/build
 PWD := $(shell pwd)
 
