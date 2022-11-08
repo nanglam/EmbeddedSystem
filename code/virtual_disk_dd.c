@@ -48,8 +48,7 @@ ssize_t vd_write(struct file *filep, const char *buf, size_t length, loff_t *f_o
     printk("buf : %s\n", buf);
     for(i=0; i<length; i++) { 
         if(kfifo_is_full(&fifo_buf)) {
-            continue;
-            //kfifo_out(&fifo_buf, ) 구현하기
+            kfifo_out(&fifo_buf, &char_buf, sizeof(char_buf));
         }
         char_buf = internal_buf[i];
         kfifo_in(&fifo_buf, &char_buf, sizeof(char_buf));
@@ -65,7 +64,6 @@ ssize_t vd_read(struct file *filep, char *buf, size_t length, loff_t *f_ops) {
     internal_buf=kmalloc(read_buf_size, GFP_KERNEL);
     memset(internal_buf, 0, read_buf_size);
 
-
     printk("length : %d\n", length);
     printk("buf : %s\n", buf);
     if(kfifo_is_empty(&fifo_buf)) {
@@ -79,7 +77,7 @@ ssize_t vd_read(struct file *filep, char *buf, size_t length, loff_t *f_ops) {
         kfifo_out(&fifo_buf, &val, sizeof(val));
         internal_buf[i] = val;
     }
-
+    
     copy_to_user(buf, internal_buf, i);
     kfree(internal_buf);
     return length;
