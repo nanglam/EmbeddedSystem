@@ -32,8 +32,7 @@ static int read_buf_size = 3; // init read buf size (M)
 */
 
 int vd_open(struct inode *inode, struct file *filep) {
-    // int number = MINOR(inode->i_rdev);
-    // printk("[VirtualDisk] Virtual Disk Device Open: Minor Number: %d\n", number);
+    printk("[VirtualDisk] Virtual Disk Device Open\n");
     return 0;
 }
 ssize_t vd_write(struct file *filep, const char *buf, size_t length, loff_t *f_ops) {
