@@ -9,8 +9,8 @@
 #define VD_DEV_MAJOR 256
 
 // ioctl control buf size
-//#define WRBUFSIZE _IOW(VD_DEV_MAJOR, 1, int)
-//#define REBUFSIZE _IOR(VD_DEV_MAJOR, 2, int)
+#define NBUF _IOW(VD_DEV_MAJOR, 2, int)
+#define MBUF _IOW(VD_DEV_MAJOR, 3, int)
 
 struct kfifo fifo_buf; // internal buf (kfifo)
 static int buf_size = 128; //init buf size (N)
@@ -60,7 +60,7 @@ ssize_t vd_read(struct file *filep, char *buf, size_t length, loff_t *f_ops) {
     int i;
     char val;
     char *internal_buf;
-    internal_buf=kmalloc(read_buf_size, GFP_KERNEL);
+    internal_buf=kmalloc(read_buf_size, GFP_KERNEL); 
     memset(internal_buf, 0, read_buf_size);
 
     printk("length : %d\n", length);
@@ -82,9 +82,25 @@ ssize_t vd_read(struct file *filep, char *buf, size_t length, loff_t *f_ops) {
     return length;
 }
 long vd_ioctl(struct file *filep, unsigned int cmd, unsigned long arg) {
-    // switch (cmd) {
-    //     case 1 break;
-    // }
+    int value;
+    switch(cmd) {
+        case MBUF :
+            if(copy_from_user(&value ,(int32_t*) arg, sizeof(value))) {
+                return -EFAULT;
+            }
+            printk("M : %d\n", value);
+            break;
+        case NBUF :
+            if(copy_from_user(&value, (int32_t*) arg, sizeof(value))) {
+                return -EFAULT;
+            }
+            printk("N : %d\n", value)
+            break;
+        default :
+            printk("Not Supported \n");
+            break;
+    }
+
     return 0;
 }
 int vd_release(struct inode *inode, struct file *filep) {
